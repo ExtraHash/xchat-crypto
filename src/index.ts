@@ -5,7 +5,9 @@ export function xEncode(
     curveType: "X25519" | "X448",
     publicKey: Uint8Array
 ): Uint8Array {
-    console.log(publicKey.length);
+    if (publicKey.length !== 32) {
+        throw new Error("Invalid key length, received key of length " + publicKey.length + " and expected length 32.")
+    }
 
     const bytes: number[] = [];
 
