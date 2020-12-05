@@ -13,3 +13,4 @@ tslint.json
 scripts
 docs
 typedoc.json
+*.log
