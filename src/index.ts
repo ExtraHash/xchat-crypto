@@ -11,7 +11,7 @@ export const xConstants: XConstants = {
     CURVE: "X25519",
     HASH: "SHA-512",
     KEY_LENGTH: 32,
-    INFO: "xhat",
+    INFO: "xchat",
     MIN_OTK_SUPPLY: 100,
 };
 
@@ -80,7 +80,7 @@ export function xEncode(
             break;
     }
 
-    const key = BigInt("0x" + encodeHex(publicKey));
+    const key = BigInt("0x" + XUtils.encodeHex(publicKey));
 
     if (isEven(key)) {
         bytes.push(0);
