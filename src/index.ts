@@ -19,6 +19,32 @@ export class XUtils extends KeyRingUtils {
         }
         return true;
     }
+
+    /**
+     * Decodes a hex string into a Uint8Array.
+     *
+     * @returns The Uint8Array.
+     */
+    public static decodeHex(hexString: string): Uint8Array {
+        if (hexString.length === 0) {
+            return new Uint8Array();
+        }
+        return new Uint8Array(
+            hexString.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
+        );
+    }
+
+    /**
+     * Encodes a Uint8Array to a hex string.
+     *
+     * @returns The hex string.
+     */
+    public static encodeHex(bytes: Uint8Array): string {
+        return bytes.reduce(
+            (str, byte) => str + byte.toString(16).padStart(2, "0"),
+            ""
+        );
+    }
 }
 
 export const xConstants: XConstants = {
