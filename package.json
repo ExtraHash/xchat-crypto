@@ -1,6 +1,6 @@
 {
     "name": "xchat-crypto",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "Crypto functions for xchat",
     "main": "./dist/index.js",
     "author": "Extra <extrahash@protonmail.com>",
@@ -34,7 +34,6 @@
     },
     "dependencies": {
         "@extrahash/keyring": "^1.0.1",
-        "@types/bip39": "^3.0.0",
         "@types/create-hmac": "^1.1.0",
         "@types/ed2curve": "^0.2.2",
         "@types/msgpack-lite": "^0.1.7",
