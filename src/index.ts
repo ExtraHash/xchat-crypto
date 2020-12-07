@@ -31,29 +31,28 @@ export class XUtils extends KeyRingUtils {
         }
         return XUtils.decodeHex(str);
     }
-    
+
     public static uint8ArrToNumber(arr: Uint8Array) {
         return Buffer.from(arr).readUIntBE(0, arr.length);
     }
-    
+
     public static unpackMessage(msg: Buffer): [Uint8Array, XTypes.WS.IBaseMsg] {
         const msgp = Uint8Array.from(msg);
         const msgh = msgp.slice(0, xConstants.HEADER_SIZE);
         const msgb = msgpack.decode(msgp.slice(xConstants.HEADER_SIZE));
-    
+
         return [msgh, msgb];
     }
-    
+
     public static packMessage(msg: any, header?: Uint8Array) {
         const msgb = Uint8Array.from(msgpack.encode(msg));
         const msgh = header || XUtils.emptyHeader();
         return xConcat(msgh, msgb);
     }
-    
+
     public static emptyHeader() {
         return new Uint8Array(xConstants.HEADER_SIZE);
     }
-    
 
     /**
      * Decodes a hex string into a Uint8Array.
@@ -83,10 +82,11 @@ export class XUtils extends KeyRingUtils {
     }
 }
 
-export function xSessionMnemonic(session: XTypes.SQL.ISession): string {
-    return bip39.entropyToMnemonic(
-        Buffer.from(xKDF(XUtils.decodeHex(session.fingerprint)))
-    );
+export function xMnemonic(
+    entropy: string | Buffer,
+    wordList?: string[] | undefined
+) {
+    return bip39.entropyToMnemonic(entropy, wordList);
 }
 
 export function xHMAC(msg: any, SK: Uint8Array) {
