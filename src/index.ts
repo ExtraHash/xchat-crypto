@@ -1,4 +1,5 @@
 import { KeyRingUtils } from "@extrahash/keyring";
+import * as bip39 from "bip39";
 import createHmac from "create-hmac";
 import ed2curve from "ed2curve";
 import hkdf from "futoin-hkdf";
@@ -80,6 +81,12 @@ export class XUtils extends KeyRingUtils {
             ""
         );
     }
+}
+
+export function xSessionMnemonic(session: XTypes.SQL.ISession): string {
+    return bip39.entropyToMnemonic(
+        Buffer.from(xKDF(XUtils.decodeHex(session.fingerprint)))
+    );
 }
 
 export function xHMAC(msg: any, SK: Uint8Array) {
