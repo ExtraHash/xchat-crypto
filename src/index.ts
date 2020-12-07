@@ -83,10 +83,10 @@ export class XUtils extends KeyRingUtils {
 }
 
 export function xMnemonic(
-    entropy: string | Buffer,
+    entropy: Uint8Array,
     wordList?: string[] | undefined
 ) {
-    return bip39.entropyToMnemonic(entropy, wordList);
+    return bip39.entropyToMnemonic(Buffer.from(entropy), wordList);
 }
 
 export function xHMAC(msg: any, SK: Uint8Array) {
