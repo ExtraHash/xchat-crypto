@@ -1,7 +1,10 @@
 import { KeyRingUtils } from "@extrahash/keyring";
+import createHmac from "create-hmac";
 import ed2curve from "ed2curve";
 import hkdf from "futoin-hkdf";
+import msgpack from "msgpack-lite";
 import nacl from "tweetnacl";
+import { XTypes } from "xchat-types";
 
 export const XKeyConvert = ed2curve;
 
@@ -20,15 +23,47 @@ export class XUtils extends KeyRingUtils {
         return true;
     }
 
+    public static numberToUint8Arr(n: number): Uint8Array {
+        let str = n.toString(16);
+        while (str.length < 12) {
+            str = "0" + str;
+        }
+        return XUtils.decodeHex(str);
+    }
+    
+    public static uint8ArrToNumber(arr: Uint8Array) {
+        return Buffer.from(arr).readUIntBE(0, arr.length);
+    }
+    
+    public static unpackMessage(msg: Buffer): [Uint8Array, XTypes.WS.IBaseMsg] {
+        const msgp = Uint8Array.from(msg);
+        const msgh = msgp.slice(0, xConstants.HEADER_SIZE);
+        const msgb = msgpack.decode(msgp.slice(xConstants.HEADER_SIZE));
+    
+        return [msgh, msgb];
+    }
+    
+    public static packMessage(msg: any, header?: Uint8Array) {
+        const msgb = Uint8Array.from(msgpack.encode(msg));
+        const msgh = header || XUtils.emptyHeader();
+        return xConcat(msgh, msgb);
+    }
+    
+    public static emptyHeader() {
+        return new Uint8Array(xConstants.HEADER_SIZE);
+    }
+    
+
     /**
      * Decodes a hex string into a Uint8Array.
      *
      * @returns The Uint8Array.
      */
-    public static decodeHex(hexString: string): Uint8Array {
+    public static decodeHex(hexString: string, length?: number): Uint8Array {
         if (hexString.length === 0) {
             return new Uint8Array();
         }
+
         return new Uint8Array(
             hexString.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
         );
@@ -47,12 +82,21 @@ export class XUtils extends KeyRingUtils {
     }
 }
 
+export function xHMAC(msg: any, SK: Uint8Array) {
+    const packedMsg = Uint8Array.from(msgpack.encode(msg));
+    const hmacGen = createHmac("sha256", Buffer.from(SK));
+    hmacGen.update(packedMsg);
+    const hmac = Uint8Array.from(hmacGen.digest());
+    return hmac;
+}
+
 export const xConstants: XConstants = {
     CURVE: "X25519",
     HASH: "SHA-512",
     KEY_LENGTH: 32,
     INFO: "xchat",
     MIN_OTK_SUPPLY: 100,
+    HEADER_SIZE: 32,
 };
 
 export function xMakeNonce(): Uint8Array {
@@ -160,9 +204,10 @@ function isEven(value: bigint) {
 
 // tslint:disable-next-line: interface-name
 interface XConstants {
-    CURVE: "X25519" | "X448";
-    HASH: "SHA-256" | "SHA-512";
+    CURVE: "X25519";
+    HASH: "SHA-512";
     INFO: string;
     KEY_LENGTH: 32 | 57;
     MIN_OTK_SUPPLY: number;
+    HEADER_SIZE: 32;
 }
