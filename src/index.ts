@@ -13,13 +13,17 @@ import { XTypes } from "xchat-types";
  */
 export const XKeyConvert = ed2curve;
 
+/**
+ * Provides several methods that are useful in working with bytes and
+ * vex messages.
+ */
 export class XUtils extends KeyRingUtils {
     /**
      * Checks if two buffer-like objects are equal.
-     * 
-     * @param buf1 
+     *
+     * @param buf1
      * @param buf2
-     * 
+     *
      * @returns True if equal, else false.
      */
     public static bytesEqual(buf1: ArrayBufferLike, buf2: ArrayBufferLike) {
@@ -40,7 +44,7 @@ export class XUtils extends KeyRingUtils {
      * Returns a six bit Uint8Array representation of an integer.
      * The integer must be positive, and it must be able to be stored
      * in six bytes.
-     * 
+     *
      * @param n The number to convert.
      * @returns The Uint8Array representation of n.
      */
@@ -54,7 +58,7 @@ export class XUtils extends KeyRingUtils {
 
     /**
      * Converts a Uint8Array representation of an integer back into a number.
-     * 
+     *
      * @param arr The array to convert.
      * @returns the number representation of arr.
      */
@@ -65,7 +69,7 @@ export class XUtils extends KeyRingUtils {
     /**
      * Takes a vex message and unpacks it into its header and a javascript object
      * respresentation of its body.
-     * 
+     *
      * @param arr The array to convert.
      * @returns [32 byte header, message body]
      */
@@ -79,7 +83,7 @@ export class XUtils extends KeyRingUtils {
 
     /**
      * Packs a javascript object and a 32 byte header into a vex message.
-     * 
+     *
      * @param arr The array to convert.
      * @returns the packed message.
      */
@@ -91,7 +95,7 @@ export class XUtils extends KeyRingUtils {
 
     /**
      * Returns the empty header (32 0's)
-     * 
+     *
      * @returns The empty header.
      */
     public static emptyHeader(): Uint8Array {
@@ -141,7 +145,7 @@ export function xMnemonic(
 
 /**
  * Returns a 32 byte HMAC of a javscript object.
- * 
+ *
  * @param msg the message to create the HMAC of
  * @param SK the secret key to create the HMAC with
  */
@@ -172,10 +176,9 @@ export function xMakeNonce(): Uint8Array {
     return nacl.randomBytes(24);
 }
 
-
 /**
  * Derives a 32 byte secret key from some initial key material.
- * 
+ *
  * @param IKM the initial key material.
  * @returns The generated key.
  */
@@ -192,7 +195,7 @@ export function xKDF(IKM: Uint8Array): Uint8Array {
 /**
  * Derives a shared Secret Key from a known private key and
  * a peer's known public key.
- * 
+ *
  * @param myPrivateKey Your own private key
  * @param theirPublicKey Their public key
  * @returns The derived shared secret, SK.
@@ -206,7 +209,7 @@ export function xDH(
 
 /**
  * Concatanates multiple Uint8Arrays.
- * 
+ *
  * @param arrays As many Uint8Arrays as you would like to concatanate.
  */
 export function xConcat(...arrays: Uint8Array[]): Uint8Array {
@@ -231,7 +234,7 @@ export function xConcat(...arrays: Uint8Array[]): Uint8Array {
 }
 
 /**
- * Encode an X25519 or X448 public key PK into a byte sequence. 
+ * Encode an X25519 or X448 public key PK into a byte sequence.
  * The encoding consists of 0 or 1 to represent the type of curve, followed by l
  * ittle-endian encoding of the u-coordinate. See [rfc 7748](https://www.ietf.org/rfc/rfc7748.txt) for more
  * details.
